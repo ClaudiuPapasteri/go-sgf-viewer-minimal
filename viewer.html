@@ -18,10 +18,12 @@
   </style>
 
   <!-- Core CSS -->
-  <link rel="stylesheet" href="css/besogo.css" id="base-css">
+  <link rel="stylesheet" href="css/besogo.css">
+
+  <!-- Default theme (can be overridden via ?theme=...) -->
   <link rel="stylesheet" href="css/board-flat.css" id="theme-css">
 
-  <!-- Full BesoGo JS stack (as in testing.html) -->
+  <!-- Full BesoGo JS stack -->
   <script src="js/besogo.js"></script>
   <script src="js/editor.js"></script>
   <script src="js/gameRoot.js"></script>
@@ -41,53 +43,55 @@
 
 <body>
 
-<div id="board"
-     class="besogo-viewer"
-     style="height: 625px; width: 552px"
-     resize="fixed"
-     coord="western"
-     panels="control+names">
-</div>
+<div id="target"></div>
 
 <script>
-  const params = new URLSearchParams(window.location.search);
+(function() {
 
-  const file = params.get("file") || "test.sgf";
-  const move = parseInt(params.get("move") || "0");
-  const theme = params.get("theme") || "flat";
+    var options = { resize: "fill" },
+        searchString = location.search.substring(1),
+        params = searchString ? searchString.split("&") : [],
+        div = document.getElementById('target'),
+        i, value;
 
-  const board = document.getElementById("board");
-
-  // Set SGF path (absolute URL recommended for GitHub Pages)
-  board.setAttribute(
-    "sgf",
-    "https://raw.githubusercontent.com/ClaudiuPapasteri/go-sgf-viewer-minimal/main/sgf/" + file
-  );
-
-  // Optional: switch board theme dynamically
-  document.getElementById("theme-css").href = "css/board-" + theme + ".css";
-
-  // Initialize BesoGo (native system)
-  besogo.autoInit();
-
-  // Move navigation AFTER initialization
-  // (BesoGo needs time to build GameRoot internally)
-  setTimeout(() => {
-    try {
-      // Find the game instance (BesoGo attaches it internally)
-      const games = document.getElementsByClassName("besogo-viewer");
-
-      if (games.length > 0 && games[0].besogo) {
-        const game = games[0].besogo.game;
-
-        if (move > 0 && game && game.gotoMove) {
-          game.gotoMove(move);
-        }
-      }
-    } catch (e) {
-      console.log("Move navigation not applied:", e);
+    // --- Parse URL parameters into options ---
+    for (i = 0; i < params.length; i++) {
+        value = params[i].split("=");
+        options[value.shift()] = value.join("=");
     }
-  }, 400);
+
+    // --- REQUIRED: map file → sgf URL ---
+    if (options.file) {
+        options.sgf = "https://raw.githubusercontent.com/ClaudiuPapasteri/go-sgf-viewer-minimal/main/sgf/" + options.file;
+        delete options.file;
+    } else {
+        div.innerHTML = "No SGF specified.";
+        return;
+    }
+
+    // --- Theme switching ---
+    if (options.theme) {
+        addStyleLink('css/board-' + options.theme + '.css');
+    }
+
+    // --- Fixed size handling ---
+    if (options.height && options.width && options.resize === 'fixed') {
+        div.style.height = options.height + 'px';
+        div.style.width = options.width + 'px';
+    }
+
+    // --- Create BesoGo viewer ---
+    besogo.create(div, options);
+
+    function addStyleLink(cssURL) {
+        var element = document.createElement('link');
+        element.href = cssURL;
+        element.type = 'text/css';
+        element.rel = 'stylesheet';
+        document.head.appendChild(element);
+    }
+
+})();
 </script>
 
 </body>
