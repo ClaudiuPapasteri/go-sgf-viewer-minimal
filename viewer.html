@@ -17,34 +17,49 @@
 <body>
 
 <!-- Standard div --> 
-
+<!-- 
 <div id="board"
      class="besogo-editor"
      data-controls="true"
      data-move-number="false">
 </div>
+-->
 
+<!-- GoMagic-like div --> 
+<div id="board"
+     class="besogo-editor"
+     data-controls="false"
+     data-move-number="false"
+     data-coordinates="false">
+</div>
+<!-- GoMagic-like minimal navigation --> 
+<button onclick="besogo.previous()">◀</button>
+<button onclick="besogo.next()">▶</button>
 
 <script>
   // get sgf from URL: ?file=game1.sgf
-  const params = new URLSearchParams(window.location.search);
-  const file = params.get("file");
-  
   // show a specific position instead of full game: 
   // viewer.html?file=game1.sgf&move=87
-  
-const move = params.get("move");
-  if (move) {
-    board.setAttribute("data-move", move);  
-  }
+  const params = new URLSearchParams(window.location.search);
+  const file = params.get("file");
+  const move = params.get("move");
+
+  const board = document.getElementById("board");
 
   if (file) {
-    document.getElementById("board")
-      .setAttribute("data-sgf", "sgf/" + file);
+    board.setAttribute("data-sgf", "sgf/" + file);
   } else {
     document.body.innerHTML = "No SGF specified.";
   }
+
+  if (move) {
+    board.setAttribute("data-move", move);
+  }
+
+  // Force BesoGo to initialize AFTER attributes are set
+  besogo.create(board);
 </script>
+
 
 </body>
 </html>
