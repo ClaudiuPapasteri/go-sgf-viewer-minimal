@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="css/besogo.css">
+  <link rel="stylesheet" href="css/board-flat.css">
   <script src="js/besogo.js"></script>
   <style>
     body {
@@ -16,16 +17,7 @@
 </head>
 <body>
 
-<!-- Standard div --> 
-<!-- 
-<div id="board"
-     class="besogo-editor"
-     data-controls="true"
-     data-move-number="false">
-</div>
--->
-
-<!-- GoMagic-like div --> 
+<!-- GoMagic-like div, but no longer needed because everything is passed via JS --> 
 <div id="board"
      class="besogo-editor"
      data-controls="false"
@@ -33,8 +25,8 @@
      data-coordinates="false">
 </div>
 <!-- GoMagic-like minimal navigation --> 
-<button onclick="besogo.previous()">◀</button>
-<button onclick="besogo.next()">▶</button>
+<button onclick="player.previous()">◀</button>
+<button onclick="player.next()">▶</button>
 
 <script>
   // get sgf from URL: ?file=game1.sgf
@@ -57,7 +49,14 @@
   }
 
   // Force BesoGo to initialize AFTER attributes are set
-  besogo.create(board);
+  const player = besogo.create(board, {
+  	sgf: "sgf/" + file,
+  	move: move ? parseInt(move) : undefined,
+  	controls: false,
+  	coordinates: false,
+  	moveNumber: false
+  });
+  window.player = player;
 </script>
 
 
