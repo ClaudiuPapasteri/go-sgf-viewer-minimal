@@ -1,84 +1,38 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BesoGo</title>
 
-  <link rel="stylesheet" type="text/css" href="css/besogo.css">
-  <link rel="stylesheet" type="text/css" href="css/besogo-fill.css">
-  <link rel="stylesheet" type="text/css" href="css/board-flat.css">
+<style>
+body { background: #edffe6; font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif; }
+h1, h2 { font-weight: normal; }
+</style>
 
-  <script src="js/besogo.js"></script>
-  <script src="js/editor.js"></script>
-  <script src="js/gameRoot.js"></script>
-  <script src="js/svgUtil.js"></script>
-  <script src="js/parseSgf.js"></script>
-  <script src="js/loadSgf.js"></script>
-  <script src="js/saveSgf.js"></script>
-  <script src="js/boardDisplay.js"></script>
-  <script src="js/coord.js"></script>
-  <script src="js/toolPanel.js"></script>
-  <script src="js/filePanel.js"></script>
-  <script src="js/controlPanel.js"></script>
-  <script src="js/namesPanel.js"></script>
-  <script src="js/commentPanel.js"></script>
-  <script src="js/treePanel.js"></script>
+<link rel="stylesheet" type="text/css" href="css/besogo.css">
+<link rel="stylesheet" type="text/css" href="css/board-flat.css">
+
+<script src="js/besogo.js"></script>
+<script src="js/editor.js"></script>
+<script src="js/gameRoot.js"></script>
+<script src="js/svgUtil.js"></script>
+<script src="js/parseSgf.js"></script>
+<script src="js/loadSgf.js"></script>
+<script src="js/saveSgf.js"></script>
+<script src="js/boardDisplay.js"></script>
+<script src="js/coord.js"></script>
+<script src="js/toolPanel.js"></script>
+<script src="js/filePanel.js"></script>
+<script src="js/controlPanel.js"></script>
+<script src="js/namesPanel.js"></script>
+<script src="js/commentPanel.js"></script>
+<script src="js/treePanel.js"></script>
+
+<body onload="besogo.autoInit()">
 
 
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #f5f5f5;
-    }
-  </style>
-</head>
+<div class="besogo-viewer" style="height: 625px; width: 552px" resize="fixed" panels="control+names" sgf="sgf/shin_vs_kejie.sgf"></div>
 
-<body>
-
-<div id="board" class="besogo-viewer"></div>
-
-<script>
-  const params = new URLSearchParams(window.location.search);
-
-  const file = params.get("file");
-  const move = params.get("move");
-
-  const theme = params.get("theme") || "flat";
-  const moveNumber = params.get("moveNumber");
-
-  const board = document.getElementById("board");
-
-  // --- SGF loading (CRITICAL: must use sgf attribute)
-  if (file) {
-    board.setAttribute("sgf", "sgf/" + file);
-  } else {
-    board.innerHTML = "No SGF specified.";
-  }
-
-  // --- move position
-  if (move) {
-    board.setAttribute("move", move);
-  }
-
-  // --- move number toggle (BesoGo uses attribute presence)
-  if (moveNumber === "0") {
-    board.setAttribute("move-number", "false");
-  }
-
-  // --- theme switching (CSS swap via JS)
-  if (theme) {
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = "css/board-" + theme + ".css";
-    document.head.appendChild(link);
-  }
-
-  // --- AUTO INIT (this is the ONLY initializer you need)
-  besogo.autoInit();
-</script>
-
+</div>
 </body>
 </html>
