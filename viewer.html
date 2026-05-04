@@ -1,38 +1,94 @@
 <!DOCTYPE html>
 <html>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>BesoGo</title>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BesoGo</title>
 
-<style>
-body { background: #edffe6; font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif; }
-h1, h2 { font-weight: normal; }
-</style>
+  <style>
+    body {
+      background: #edffe6;
+      font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
 
-<link rel="stylesheet" type="text/css" href="css/besogo.css">
-<link rel="stylesheet" type="text/css" href="css/board-flat.css">
+  <!-- Core CSS -->
+  <link rel="stylesheet" href="css/besogo.css" id="base-css">
+  <link rel="stylesheet" href="css/board-flat.css" id="theme-css">
 
-<script src="js/besogo.js"></script>
-<script src="js/editor.js"></script>
-<script src="js/gameRoot.js"></script>
-<script src="js/svgUtil.js"></script>
-<script src="js/parseSgf.js"></script>
-<script src="js/loadSgf.js"></script>
-<script src="js/saveSgf.js"></script>
-<script src="js/boardDisplay.js"></script>
-<script src="js/coord.js"></script>
-<script src="js/toolPanel.js"></script>
-<script src="js/filePanel.js"></script>
-<script src="js/controlPanel.js"></script>
-<script src="js/namesPanel.js"></script>
-<script src="js/commentPanel.js"></script>
-<script src="js/treePanel.js"></script>
+  <!-- Full BesoGo JS stack (as in testing.html) -->
+  <script src="js/besogo.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/gameRoot.js"></script>
+  <script src="js/svgUtil.js"></script>
+  <script src="js/parseSgf.js"></script>
+  <script src="js/loadSgf.js"></script>
+  <script src="js/saveSgf.js"></script>
+  <script src="js/boardDisplay.js"></script>
+  <script src="js/coord.js"></script>
+  <script src="js/toolPanel.js"></script>
+  <script src="js/filePanel.js"></script>
+  <script src="js/controlPanel.js"></script>
+  <script src="js/namesPanel.js"></script>
+  <script src="js/commentPanel.js"></script>
+  <script src="js/treePanel.js"></script>
+</head>
 
-<body onload="besogo.autoInit()">
+<body>
 
-
-<div class="besogo-viewer" style="height: 625px; width: 552px" resize="fixed" coord ="western" panels="control+names" path="20" sgf="https://raw.githubusercontent.com/ClaudiuPapasteri/go-sgf-viewer-minimal/refs/heads/main/sgf/test.sgf"></div>
-
+<div id="board"
+     class="besogo-viewer"
+     style="height: 625px; width: 552px"
+     resize="fixed"
+     coord="western"
+     panels="control+names">
 </div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+
+  const file = params.get("file") || "test.sgf";
+  const move = parseInt(params.get("move") || "0");
+  const theme = params.get("theme") || "flat";
+
+  const board = document.getElementById("board");
+
+  // Set SGF path (absolute URL recommended for GitHub Pages)
+  board.setAttribute(
+    "sgf",
+    "https://raw.githubusercontent.com/ClaudiuPapasteri/go-sgf-viewer-minimal/main/sgf/" + file
+  );
+
+  // Optional: switch board theme dynamically
+  document.getElementById("theme-css").href = "css/board-" + theme + ".css";
+
+  // Initialize BesoGo (native system)
+  besogo.autoInit();
+
+  // Move navigation AFTER initialization
+  // (BesoGo needs time to build GameRoot internally)
+  setTimeout(() => {
+    try {
+      // Find the game instance (BesoGo attaches it internally)
+      const games = document.getElementsByClassName("besogo-viewer");
+
+      if (games.length > 0 && games[0].besogo) {
+        const game = games[0].besogo.game;
+
+        if (move > 0 && game && game.gotoMove) {
+          game.gotoMove(move);
+        }
+      }
+    } catch (e) {
+      console.log("Move navigation not applied:", e);
+    }
+  }, 400);
+</script>
+
 </body>
 </html>
