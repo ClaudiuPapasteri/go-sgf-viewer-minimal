@@ -39,7 +39,7 @@
   const board = document.getElementById("board");
 
   if (file) {
-    board.setAttribute("data-sgf", "sgf/" + file);
+    board.setAttribute("sgf", "sgf/" + file);
   } else {
     document.body.innerHTML = "No SGF specified.";
   }
