@@ -2,63 +2,41 @@
 <html>
 <head>
   <meta charset="UTF-8">
+
   <link rel="stylesheet" href="css/besogo.css">
   <link rel="stylesheet" href="css/board-flat.css">
+
   <script src="js/besogo.js"></script>
+
   <style>
     body {
       margin: 0;
       display: flex;
       justify-content: center;
       align-items: center;
+      height: 100vh; /* important */
       background: #f5f5f5;
     }
   </style>
 </head>
 <body>
 
-<!-- GoMagic-like div, but no longer needed because everything is passed via JS --> 
-<div id="board"
-     class="besogo-editor"
-     data-controls="false"
-     data-move-number="false"
-     data-coordinates="false">
-</div>
-<!-- GoMagic-like minimal navigation --> 
-<button onclick="player.previous()">◀</button>
-<button onclick="player.next()">▶</button>
+<div id="board"></div>
 
 <script>
-  // get sgf from URL: ?file=game1.sgf
-  // show a specific position instead of full game: 
-  // viewer.html?file=game1.sgf&move=87
   const params = new URLSearchParams(window.location.search);
   const file = params.get("file");
   const move = params.get("move");
 
-  const board = document.getElementById("board");
-
-  if (file) {
-    board.setAttribute("sgf", "sgf/" + file);
-  } else {
+  if (!file) {
     document.body.innerHTML = "No SGF specified.";
+  } else {
+    const player = besogo.create(document.getElementById("board"), {
+      sgf: "sgf/" + file,
+      move: move ? parseInt(move) : undefined
+    });
   }
-
-  if (move) {
-    board.setAttribute("data-move", move);
-  }
-
-  // Force BesoGo to initialize AFTER attributes are set
-  const player = besogo.create(board, {
-  	sgf: "sgf/" + file,
-  	move: move ? parseInt(move) : undefined,
-  	controls: false,
-  	coordinates: false,
-  	moveNumber: false
-  });
-  window.player = player;
 </script>
-
 
 </body>
 </html>
